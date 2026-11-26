@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Ahmed Mujtaba: AI/ML engineer designing and building intelligent systems end to end, with a focus on agents, voice and retrieval.">
+<meta name="description" content="Ahmed Mujtaba: AI/ML engineer designing and building intelligent systems end to end, with a focus on agents, voice, retrieval and security.">
 <style>*,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Ahmed Mujtaba</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -509,7 +509,7 @@ html[data-sector="contact"]{--n1:rgba(255,170,90,.26);--n2:rgba(24,86,196,.26);-
     <div>
       <div class="eyebrow">AI / ML engineer · Premier Systems</div>
       <h1><span class="first">Ahmed</span><span class="last">Mujtaba</span></h1>
-      <p class="thesis">I design and build <b>intelligent systems end to end</b>, taking ideas from research to production. My work centres on <b>AI agents</b>, <b>voice</b> and <b>retrieval</b>, and the engineering that makes them reliable.</p>
+      <p class="thesis">I design and build <b>intelligent systems end to end</b>, taking ideas from research to production. My work centres on <b>AI agents</b>, <b>voice</b>, <b>retrieval</b> and <b>security</b>, and the engineering that makes them reliable.</p>
       <div class="cta">
         <a class="btn primary" href="#work">See selected work ↓</a>
         <a class="btn" href="https://github.com/Ahmedmuji" target="_blank" rel="noopener">GitHub ↗</a>
@@ -1017,6 +1017,13 @@ function size(){const r=cv.getBoundingClientRect();dpr=Math.min(2,devicePixelRat
   cx=W/2;cy=H*.5;R=Math.min(W/2-24,(H/2-46)/TILT);S=Math.max(.8,Math.min(1.5,R/250));buildDisk()}
 size();
 const place=(rr,th)=>({x:cx+Math.cos(th)*rr,y:cy+Math.sin(th)*rr*TILT,depth:Math.sin(th)});
+const TXT=new Map();let TXT_DPR=Math.min(2,devicePixelRatio||1)*2;
+function textSprite(str,font,col){const key=str+'|'+font+'|'+col;let c=TXT.get(key);if(c)return c;
+  const m=document.createElement('canvas').getContext('2d');m.font=font;const w=Math.ceil(m.measureText(str).width)+6,fs=parseFloat(font.match(/(\d+(?:\.\d+)?)px/)[1]),h=Math.ceil(fs*1.5);
+  c=document.createElement('canvas');c.width=w*TXT_DPR;c.height=h*TXT_DPR;const x=c.getContext('2d');x.scale(TXT_DPR,TXT_DPR);x.font=font;x.fillStyle=col;x.textBaseline='middle';x.fillText(str,3,h/2);
+  c.w=w;c.h=h;TXT.set(key,c);return c}
+function drawText(str,font,col,x,y,align){const c=textSprite(str,font,col);const ox=align==='left'?-3:align==='right'?-c.w+3:-c.w/2;ctx.drawImage(c,x+ox,y-c.h/2,c.w,c.h)}
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>TXT.clear());
 const SPR={};function sprite(col){if(SPR[col])return SPR[col];const n=96,c=document.createElement("canvas");c.width=c.height=n;const x=c.getContext("2d"),h=n/2;
   const g=x.createRadialGradient(h,h,0,h,h,h);g.addColorStop(0,"rgba(255,255,255,1)");g.addColorStop(.1,"rgba(255,255,255,.9)");g.addColorStop(.24,col);g.addColorStop(.55,col+"33");g.addColorStop(1,col+"00");
   x.fillStyle=g;x.beginPath();x.arc(h,h,h,0,6.283);x.fill();
@@ -1037,7 +1044,7 @@ function frame(ts){
   ctx.save();ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ctx.translate(cx,cy);ctx.scale(1,TILT);ctx.rotate(rot);ctx.drawImage(disk,-R,-R,R*2,R*2);ctx.restore();
   // arm names at the arm tips
   ctx.font="10px 'JetBrains Mono',monospace";ctx.textAlign="center";
-  ARMS.forEach((A,k)=>{const q=place(R*.99,armAngle(k,1)+rot);ctx.globalAlpha=hover>=0?.25:.6;ctx.fillStyle=A.col;const lx=Math.max(70,Math.min(W-70,q.x));ctx.fillText(A.name.toUpperCase(),lx,q.y+3+q.depth*13)});
+  ARMS.forEach((A,k)=>{const q=place(R*.99,armAngle(k,1)+rot);ctx.globalAlpha=hover>=0?.25:.6;const lx=Math.max(80,Math.min(W-80,q.x));drawText(A.name.toUpperCase(),"10px 'JetBrains Mono',monospace",A.col,lx,q.y+q.depth*13,'center')});
   ctx.globalAlpha=1;
   // project stars
   PROJ.forEach(p=>{p.pos=place(R*(.06+p.u*.92),armAngle(p.arm,p.u)+rot)});
@@ -1046,14 +1053,13 @@ function frame(ts){
       hs=(p.hs=(p.hs||1)+(((i===hover)?1.4:1)-(p.hs||1))*(1-Math.pow(.82,dt/16.7))),
       r=(p.big?8.5:6.5)*S*(1+p.pos.depth*.1)*hs;
     ctx.globalAlpha=(dim?.35:1)*(.82+.18*tw);star(p.pos.x,p.pos.y,r,A.col,tw);ctx.globalAlpha=dim?.35:1;
-    ctx.font=`italic 600 ${Math.round((p.big?15:13.5)*Math.min(1.25,S))}px 'Cormorant Garamond',serif`;ctx.textAlign="center";ctx.fillStyle="#eef4ff";
-    ctx.fillText(p.n,p.pos.x,p.pos.y-(p.big?8.5:6.5)*S*1.9-6);
+    drawText(p.n,`italic 600 ${Math.round((p.big?15:13.5)*Math.min(1.25,S))}px 'Cormorant Garamond',serif`,"#eef4ff",p.pos.x,p.pos.y-(p.big?8.5:6.5)*S*1.9-10,'center');
     if(i===hover&&mfade<1)mfade=Math.min(1,mfade+dt/220);
     if(i===hover){const mr=(r*3+14*S)*(.7+.3*mfade);ctx.globalAlpha=.4*mfade;ctx.strokeStyle=A.col;ctx.lineWidth=.6;ctx.setLineDash([2,3]);ctx.beginPath();ctx.ellipse(p.pos.x,p.pos.y,mr,mr*.75,0,0,6.283);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=mfade;
       ctx.font=`${Math.round(10*Math.min(1.2,S))}px 'JetBrains Mono',monospace`;ctx.fillStyle="#ffd98a";
       p.m.forEach((m,k)=>{const ang=ts*.00055+k*(6.283/p.m.length),mx=p.pos.x+Math.cos(ang)*mr,my=p.pos.y+Math.sin(ang)*mr*.75,right=Math.cos(ang)>=0;
         ctx.beginPath();ctx.arc(mx,my,2.6*S,0,6.283);ctx.fill();
-        ctx.textAlign=right?"left":"right";ctx.fillText(m,mx+(right?6:-6),my+3.5)})}
+        drawText(m,`${Math.round(10*Math.min(1.2,S))}px 'JetBrains Mono',monospace`,"#ffd98a",mx+(right?6:-6),my,right?'left':'right')})}
     ctx.globalAlpha=1});
   requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
