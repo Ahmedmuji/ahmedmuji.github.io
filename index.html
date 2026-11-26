@@ -421,6 +421,9 @@ nav.top{background:rgba(4,5,13,.6)}
 }
 @media (prefers-reduced-motion:reduce){.xp-line::after{display:none}}
 
+/* galaxy floats free in the sky: no box */
+.graph{border:0!important;background:none!important;border-radius:0!important;overflow:visible!important;box-shadow:none!important}
+.graph .legend{justify-content:center;gap:28px;opacity:.75}
 /* ---------- toolkit constellations ---------- */
 .stack{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 @media (max-width:760px){.stack{grid-template-columns:1fr}}
