@@ -424,6 +424,31 @@ nav.top{background:rgba(4,5,13,.6)}
 /* galaxy floats free in the sky: no box */
 .graph{border:0!important;background:none!important;border-radius:0!important;overflow:visible!important;box-shadow:none!important}
 .graph .legend{justify-content:center;gap:28px;opacity:.75}
+/* ---------- collapsible case studies ---------- */
+.work-tools{display:flex;flex-direction:column;align-items:flex-end;gap:12px;max-width:30em}
+.work-tools p{margin:0;color:var(--muted);text-align:right}
+.btn.ghost{background:transparent;font-size:.78rem;padding:8px 14px}
+.case .teaser{margin:0;color:var(--muted);max-width:62ch}
+.case:not(.collapsed) .teaser{display:none}
+.case-toggle{flex:none;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:rgba(8,12,30,.6);color:var(--fg);cursor:pointer;transition:transform .45s cubic-bezier(.2,.8,.2,1),border-color .3s,background .3s}
+.case-toggle svg{width:14px;height:14px}
+.case:not(.collapsed) .case-toggle{transform:rotate(180deg);border-color:rgba(127,231,255,.45)}
+.case-toggle:hover{background:rgba(127,231,255,.12)}
+.case .meta{gap:14px}
+.case .meta .right{display:flex;align-items:center;gap:14px}
+.case.collapsed{grid-template-columns:1fr;cursor:pointer}
+.case.collapsed .vis{display:none}
+.case.collapsed .txt{padding:22px 30px;gap:8px}
+.case.collapsed .txt>*:not(.meta):not(h3):not(.teaser){display:none}
+.case.collapsed h3{font-size:clamp(1.25rem,2vw,1.6rem)}
+.case.collapsed:hover{border-color:rgba(168,203,255,.35)}
+.case.collapsed:hover .case-toggle{border-color:var(--mint)}
+.case.opening .txt>*:not(.meta):not(h3),.case.opening .vis{animation:unfold .55s cubic-bezier(.2,.8,.2,1) both}
+.case.opening .vis{animation-delay:.08s}
+@keyframes unfold{from{opacity:0;transform:translateY(14px)}}
+#work .case{margin-bottom:14px}
+@media (max-width:860px){.work-tools{align-items:flex-start}.work-tools p{text-align:left}.case.collapsed .txt{padding:18px 20px}}
+
 /* ---------- toolkit constellations ---------- */
 .stack{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 @media (max-width:760px){.stack{grid-template-columns:1fr}}
@@ -587,7 +612,7 @@ html[data-sector="contact"]{--n1:rgba(255,170,90,.26);--n2:rgba(24,86,196,.26);-
   <section id="work">
     <div class="head">
       <h2>Selected work</h2>
-      <p>Six builds across voice AI, research, enterprise automation and agent systems. Each one is open on GitHub.</p>
+      <div class="work-tools"><p>Six builds across voice AI, research, enterprise automation and agent systems. Click a project to open it.</p><button type="button" class="btn ghost" id="toggleAll">Expand all</button></div>
     </div>
 
     <article class="case" id="p-raabta">
@@ -860,6 +885,29 @@ stackGrid.innerHTML=CONST.map((c,ci)=>{
 if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&"IntersectionObserver" in window){
   const io2=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add("draw");io2.unobserve(en.target)}}),{threshold:.35});
   document.querySelectorAll(".const").forEach(s=>io2.observe(s))}
+
+/* ---------- collapsible case studies ---------- */
+(()=>{
+const cases=[...document.querySelectorAll("#work .case")];
+const chev='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function set(c,open,animate){c.classList.toggle("collapsed",!open);const b=c.querySelector(".case-toggle");b.setAttribute("aria-expanded",open);b.setAttribute("aria-label",(open?"Collapse ":"Expand ")+c.querySelector("h3").textContent);
+  if(open&&animate){c.classList.remove("opening");void c.offsetWidth;c.classList.add("opening");setTimeout(()=>c.classList.remove("opening"),800)}
+  syncAll()}
+const tAll=document.getElementById("toggleAll");
+function syncAll(){const anyClosed=cases.some(c=>c.classList.contains("collapsed"));tAll.textContent=anyClosed?"Expand all":"Collapse all"}
+cases.forEach((c,i)=>{
+  const meta=c.querySelector(".meta"),repo=meta.querySelector(".repo"),firstP=c.querySelector(".txt p");
+  const right=document.createElement("div");right.className="right";meta.appendChild(right);right.appendChild(repo);
+  const b=document.createElement("button");b.type="button";b.className="case-toggle";b.innerHTML=chev;right.appendChild(b);
+  const t=document.createElement("p");t.className="teaser";t.textContent=(firstP.textContent.match(/^[^.]+\./)||[firstP.textContent])[0];
+  c.querySelector("h3").after(t);
+  b.addEventListener("click",e=>{e.stopPropagation();set(c,c.classList.contains("collapsed"),true)});
+  c.addEventListener("click",e=>{if(c.classList.contains("collapsed")&&!e.target.closest("a")){set(c,true,true)}});
+  c.querySelector("h3").addEventListener("click",e=>{if(!c.classList.contains("collapsed")){e.stopPropagation();set(c,false,false)}});
+  set(c,i===0,false)});
+tAll.addEventListener("click",()=>{const open=cases.some(c=>c.classList.contains("collapsed"));cases.forEach(c=>set(c,open,open))});
+window.openCase=id=>{const c=document.getElementById(id);if(c&&c.classList.contains("collapsed"))set(c,true,true)};
+})();
 
 /* ---------- index ---------- */
 const more=[
@@ -1178,7 +1226,7 @@ function setHover(h){if(h===hover)return;hover=h;mfade=0;cv.style.cursor=h>=0?"p
 cv.addEventListener("pointermove",e=>{pq=e;},{passive:true});
 (function hoverLoop(){if(pq){setHover(pick(pq));pq=null}requestAnimationFrame(hoverLoop)})();
 cv.addEventListener("pointerleave",()=>{pq=null;setHover(-1)});
-cv.addEventListener("click",e=>{const i=pick(e);if(i>=0){const el=document.getElementById(PROJ[i].t);el&&el.scrollIntoView({behavior:reduce?"auto":"smooth"})}});
+cv.addEventListener("click",e=>{const i=pick(e);if(i>=0){const id=PROJ[i].t,el=document.getElementById(id);window.openCase&&window.openCase(id);el&&el.scrollIntoView({behavior:reduce?"auto":"smooth"})}});
 let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(size,150)});
 })();
 </script>
