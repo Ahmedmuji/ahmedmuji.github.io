@@ -338,6 +338,31 @@ nav.top{background:rgba(4,5,13,.6)}
 @keyframes sig{30%{opacity:1;transform:scale(1)}70%{opacity:1}to{opacity:0;transform:scale(1.6);filter:blur(8px)}}
 .warp.done{opacity:0;visibility:hidden}
 
+/* ---------- toolkit constellations ---------- */
+.stack{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:760px){.stack{grid-template-columns:1fr}}
+.group{position:relative;padding:22px 22px 12px;background:radial-gradient(ellipse at 50% 60%,rgba(123,92,255,.16),transparent 70%),rgba(6,8,24,.5);overflow:hidden}
+.group .cname{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.group .cname h3{margin:0;font:italic 600 1.7rem/1 var(--display);letter-spacing:0;text-transform:none;color:var(--fg)}
+.group .cname small{font:.7rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+.group .desig{font:.68rem var(--mono);color:var(--faint);margin-top:6px}
+.const{width:100%;height:auto;display:block;margin-top:6px;overflow:visible}
+.const .ln{stroke:var(--lilac);stroke-width:.8;opacity:.5;stroke-dasharray:3 3}
+.const.draw .ln{stroke-dasharray:400;stroke-dashoffset:400;animation:drawline 1.6s ease forwards}
+@keyframes drawline{to{stroke-dashoffset:0}}
+.const .st{cursor:default}
+.const .halo{fill:url(#starglow);opacity:.75;transform-box:fill-box;transform-origin:center;animation:twinkle 3s ease-in-out infinite alternate}
+.const .core{fill:#fff}
+.const .spk{stroke:#fff;stroke-width:.5;opacity:.7}
+.const text{font:9.5px var(--mono);fill:var(--muted);letter-spacing:.02em;transition:fill .25s}
+.const .st:hover text,.const .st:focus text{fill:var(--amber)}
+.const .st:hover .halo,.const .st:focus .halo{opacity:1;transform:scale(1.8)}
+.const .st:focus{outline:none}
+.const .bg{fill:var(--faint);opacity:.5}
+@keyframes twinkle{from{opacity:.35;transform:scale(.8)}to{opacity:.95;transform:scale(1.15)}}
+body{overflow-x:clip}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
 /* ---------- big screens: let the layout grow with the window ---------- */
 .stat strong,.big,.warp .sig{font-variant-numeric:lining-nums tabular-nums}
 @media (min-width:1400px){
@@ -594,12 +619,7 @@ html[data-sector="contact"]{--n1:rgba(255,170,90,.26);--n2:rgba(214,92,190,.26);
   <div class="gate" aria-hidden="true"><div class="horizon"></div><div class="label">Entering · Toolkit</div></div>
   <section id="stack">
     <div class="head"><h2>Toolkit</h2><p>What I reach for, from model training to deployment.</p></div>
-    <div class="stack">
-      <div class="group"><h3>Languages</h3><ul><li>Python</li><li>C++</li><li>JavaScript</li><li>TypeScript</li><li>SQL</li><li>Bash</li></ul></div>
-      <div class="group"><h3>AI &amp; ML</h3><ul><li>PyTorch</li><li>TensorFlow</li><li>Keras</li><li>scikit-learn</li><li>LangChain</li><li>Hugging Face</li><li>OpenCV</li><li>Pandas</li></ul></div>
-      <div class="group"><h3>Apps &amp; data</h3><ul><li>FastAPI</li><li>Flask</li><li>Streamlit</li><li>Next.js</li><li>PostgreSQL</li><li>MongoDB</li><li>Redis</li><li>ChromaDB</li><li>FAISS</li></ul></div>
-      <div class="group"><h3>Infra</h3><ul><li>Docker</li><li>gRPC</li><li>Kubernetes</li><li>AWS</li><li>Azure</li><li>GCP</li><li>GitHub Actions</li><li>Linux</li></ul></div>
-    </div>
+    <div class="stack" id="stackGrid"></div>
   </section>
 
   <div class="gate" aria-hidden="true"><div class="horizon"></div><div class="label">Entering · Contact</div></div>
@@ -629,6 +649,41 @@ document.getElementById("bars").innerHTML=metrics.map(m=>`
    <div class="lbl" style="margin:0"><span>${m.fmt(m.a)}</span><span>${m.fmt(m.b)}</span></div>
    <div class="track"><div class="fill" style="width:${m.a/m.max*100}%"></div></div>
    <div class="track"><div class="fill base" style="width:${m.b/m.max*100}%"></div></div></div>`).join("");
+
+/* ---------- toolkit as constellations ---------- */
+const CONST=[
+  {name:"Lingua",sub:"Languages",desig:"6 stars · the W of the coder",
+   s:[["Python",30,70,"t"],["C++",90,150,"b"],["JavaScript",150,85,"t"],["TypeScript",210,155,"l"],["SQL",270,70,"t"],["Bash",250,205,"l"]],
+   e:[[0,1],[1,2],[2,3],[3,4],[3,5]]},
+  {name:"Machina",sub:"AI & ML",desig:"8 stars · the hunter's belt",
+   s:[["Pandas",150,18,"r"],["PyTorch",80,55,"l"],["TensorFlow",225,60,"r"],["Keras",112,116,"l"],["scikit-learn",152,124,"b"],["LangChain",192,130,"r"],["Hugging Face",78,200,"b"],["OpenCV",232,196,"b"]],
+   e:[[0,1],[0,2],[1,3],[2,5],[3,4],[4,5],[3,6],[5,7]]},
+  {name:"Apparatus",sub:"Apps & data",desig:"9 stars · the great ladle",
+   s:[["FastAPI",22,45,"t"],["Flask",75,58,"t"],["Streamlit",120,80,"t"],["Next.js",158,112,"r"],["PostgreSQL",168,175,"b"],["MongoDB",262,182,"b"],["Redis",275,118,"t"],["ChromaDB",92,178,"t"],["FAISS",40,205,"b"]],
+   e:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,3],[4,7],[7,8]]},
+  {name:"Corona",sub:"Infrastructure",desig:"8 stars · the crown",
+   s:[["Docker",30,150,"b"],["gRPC",52,95,"l"],["Kubernetes",92,58,"t"],["AWS",150,44,"t"],["Azure",208,58,"t"],["GCP",248,95,"r"],["GitHub Actions",270,150,"b"],["Linux",150,175,"b"]],
+   e:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[0,7],[7,6]]}];
+const stackGrid=document.getElementById("stackGrid");
+stackGrid.innerHTML=CONST.map((c,ci)=>{
+  let rs=ci*97+13;const rr=()=>(rs=(rs*16807)%2147483647)/2147483647;
+  const bg=Array.from({length:26},()=>`<circle class="bg" cx="${(rr()*300).toFixed(1)}" cy="${(rr()*225).toFixed(1)}" r="${(rr()*.9+.3).toFixed(2)}"/>`).join("");
+  const lines=c.e.map(([a,b],k)=>`<line class="ln" style="animation-delay:${k*.14}s" x1="${c.s[a][1]}" y1="${c.s[a][2]}" x2="${c.s[b][1]}" y2="${c.s[b][2]}"/>`).join("");
+  // label placement: t = above, b = below, l = left, r = right of the star
+  const place={t:[0,-12,"middle"],b:[0,20,"middle"],l:[-11,3.5,"end"],r:[11,3.5,"start"]};
+  const stars=c.s.map(([n,x,y,p],k)=>{const big=k===0?1.3:1,[dx,dy,anc]=place[p||"r"];
+    return `<g class="st" tabindex="0" aria-label="${n}"><circle class="halo" cx="${x}" cy="${y}" r="${9*big}" style="animation-delay:${-(k*.7)%3}s"/>
+      <line class="spk" x1="${x-6*big}" y1="${y}" x2="${x+6*big}" y2="${y}"/><line class="spk" x1="${x}" y1="${y-6*big}" x2="${x}" y2="${y+6*big}"/>
+      <circle class="core" cx="${x}" cy="${y}" r="${2*big}"/><text x="${x+dx}" y="${y+dy}" text-anchor="${anc}">${n}</text></g>`}).join("");
+  return `<div class="group"><div class="cname"><h3>${c.name}</h3><small>${c.sub}</small></div><div class="desig">${c.desig}</div>
+    <svg class="const" viewBox="-30 -14 360 250" role="img" aria-label="${c.sub}: ${c.s.map(s=>s[0]).join(", ")}">
+      <defs><radialGradient id="starglow"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".25" stop-color="#c8b6ff" stop-opacity=".6"/><stop offset="1" stop-color="#7b5cff" stop-opacity="0"/></radialGradient></defs>
+      ${bg}${lines}${stars}</svg>
+    <ul class="sr">${c.s.map(s=>`<li>${s[0]}</li>`).join("")}</ul></div>`}).join("");
+// trace the constellation lines when each one scrolls into view (lines are visible at rest)
+if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&"IntersectionObserver" in window){
+  const io2=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add("draw");io2.unobserve(en.target)}}),{threshold:.35});
+  document.querySelectorAll(".const").forEach(s=>io2.observe(s))}
 
 /* ---------- index ---------- */
 const more=[
