@@ -338,6 +338,33 @@ nav.top{background:rgba(4,5,13,.6)}
 @keyframes sig{30%{opacity:1;transform:scale(1)}70%{opacity:1}to{opacity:0;transform:scale(1.6);filter:blur(8px)}}
 .warp.done{opacity:0;visibility:hidden}
 
+/* ---------- big screens: let the layout grow with the window ---------- */
+.stat strong,.big,.warp .sig{font-variant-numeric:lining-nums tabular-nums}
+@media (min-width:1400px){
+  .wrap{max-width:min(88vw,1760px)}
+  .hero{min-height:calc(100vh - 140px);gap:4vw;padding-block:4vh 3vh}
+  .hero h1{font-size:clamp(7rem,8.6vw,11.5rem)}
+  .thesis{font-size:clamp(1.22rem,1.15vw,1.55rem);max-width:36em}
+  .graph{height:clamp(470px,64vh,820px)}
+  .eclipse{width:clamp(500px,36vw,820px);left:-9vw;top:-2vh}
+  .btn{font-size:.92rem;padding:13px 22px}
+  .stat{padding:2.2vh 1.6vw}
+  .stat strong{font-size:clamp(3rem,3.4vw,4.4rem)}
+  .stat span{font-size:1rem}
+  .head h2{font-size:clamp(3.8rem,4.4vw,5.6rem)}
+  .head p{font-size:1.08rem}
+  .case .txt{padding:3vw}
+  .case .vis{padding:2.6vw}
+  .case h3{font-size:clamp(1.85rem,1.9vw,2.5rem)}
+  .case p{font-size:1.05rem}
+  .item{grid-template-columns:120px minmax(0,1fr) minmax(0,1.8fr) auto}
+  .item h3{font-size:1.6rem}
+  .contact h2{font-size:clamp(4.4rem,5vw,6.4rem)}
+  .gate{height:280px}
+  nav.top .wrap{padding-block:18px}
+}
+@media (min-width:2200px){html{font-size:118%}}
+
 /* ---------- section-to-section transitions ---------- */
 @property --n1{syntax:"<color>";initial-value:rgba(123,92,255,.42);inherits:true}
 @property --n2{syntax:"<color>";initial-value:rgba(127,231,255,.18);inherits:true}
