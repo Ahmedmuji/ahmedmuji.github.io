@@ -1365,7 +1365,7 @@ const P=[
  {n:"CyberFlow",t:"index",f:2,s:"B",m:["MITRE","Streamlit"]},
  {n:"Text2Image",t:"index",f:2,s:"B",m:["SDXL","gRPC","Docker"]},
  {n:"OrderBot",t:"index",f:2,s:"B",m:["Flask","gTTS","LLM"]}];
-let W=0,H=0,dpr=1,cx=0,cy=0,d=0,die=0,board=null,hover=-1,last=0,typed=0,ring=0;
+let W=0,H=0,dpr=1,cx=0,cy=0,d=0,die=0,board=null,hover=-1,last=0,typed=0,ring=0,CORE=null,L3=null,freq=4.8,temp=42;
 const cores=Array.from({length:16},()=>({lv:Math.random()*.3}));
 const LABEL="600 11px 'Chakra Petch','Segoe UI',sans-serif",MONO="10px 'JetBrains Mono',monospace",TINY="8px 'JetBrains Mono',monospace";
 function chamfer(pts,k0){const out=[pts[0]];for(let i=1;i<pts.length-1;i++){const a=pts[i-1],b=pts[i],c=pts[i+1],d1=Math.hypot(b[0]-a[0],b[1]-a[1]),d2=Math.hypot(c[0]-b[0],c[1]-b[1]);
@@ -1374,7 +1374,7 @@ function chamfer(pts,k0){const out=[pts[0]];for(let i=1;i<pts.length-1;i++){cons
 function measure(p){p.seg=[];let L=0;for(let i=1;i<p.path.length;i++){const a=p.path[i-1],b=p.path[i],l=Math.hypot(b[0]-a[0],b[1]-a[1]);p.seg.push(l);L+=l}p.len=L}
 function along(p,t){t=Math.max(0,Math.min(1,t));let dist=t*p.len;for(let i=0;i<p.seg.length;i++){if(dist<=p.seg[i]||i===p.seg.length-1){const a=p.path[i],b=p.path[i+1],k=p.seg[i]?Math.min(1,dist/p.seg[i]):0;return[a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k]}dist-=p.seg[i]}return p.path[p.path.length-1]}
 function layout(){
-  cx=W/2;cy=H*.45;d=Math.max(52,Math.min(W,H)*.15);die=d*.6;
+  cx=W/2;cy=H*.44;d=Math.max(74,Math.min(W*.235,H*.23));die=d*.74;CORE={x:cx-die*.86,y:cy-die*.44,w:die*1.02,h:die*1.0};L3={x:cx+die*.28,y:cy-die*.44,w:die*.6,h:die*.62};
   const side=k=>P.filter(p=>p.s===k),rank=(i,n)=>i<n/2?i:n-1-i;
   [["L",-1],["R",1]].forEach(([k,dir])=>{const g=side(k),n=g.length;g.forEach((p,i)=>{
     const ny=cy-H*.32+i*(H*.64/(n-1)),py=cy-d*.75+i*(d*1.5/(n-1)),xm=cx+dir*(d+22+(Math.floor(n/2)-rank(i,n))*13),edge=cx+dir*d;
@@ -1407,12 +1407,37 @@ function buildBoard(){
   P.forEach(p=>{x.fillStyle=F[p.f].col;const [a,b]=p.pin;x.fillRect(a-3,b-3,6,6)});
   // substrate traces fanning into the die
   x.strokeStyle="rgba(255,255,255,.06)";x.lineWidth=1;P.forEach(p=>{x.beginPath();x.moveTo(p.pin[0],p.pin[1]);x.lineTo(cx+(p.pin[0]-cx)*.62,cy+(p.pin[1]-cy)*.62);x.stroke()});
-  // heat spreader + die
-  const g=x.createLinearGradient(cx-die,cy-die,cx+die,cy+die);g.addColorStop(0,"#2a313b");g.addColorStop(.5,"#161b22");g.addColorStop(1,"#0d1015");
-  x.fillStyle=g;x.fillRect(cx-die,cy-die,die*2,die*2);x.strokeStyle="rgba(255,59,71,.7)";x.lineWidth=1.4;x.strokeRect(cx-die+.5,cy-die+.5,die*2-1,die*2-1);
-  x.fillStyle="rgba(255,255,255,.08)";x.beginPath();x.moveTo(cx-die+3,cy-die+3);x.lineTo(cx-die+12,cy-die+3);x.lineTo(cx-die+3,cy-die+12);x.fill(); // pin-1 marker
-  x.textAlign="center";x.textBaseline="middle";x.fillStyle="#ffffff";x.font="700 "+Math.round(die*.36)+"px 'Chakra Petch',sans-serif";x.fillText("AM-01",cx,cy-die*.62);
-  x.font=TINY;x.fillStyle="rgba(232,237,242,.5)";x.fillText("AI CORE · 14N · 2026",cx,cy+die*.78);
+  // SMD capacitors ringing the die
+  x.fillStyle="#b08a3a";const capRow=(x0,y0,dx,dy,n)=>{for(let k=0;k<n;k++){x.fillRect(x0+dx*k,y0+dy*k,4,2.4);x.fillStyle=k%2?"#b08a3a":"#8a6a2a"}};
+  const cg=(d-die)*.5;capRow(cx-die,cy-die-cg-1,die*2/14,0,15);capRow(cx-die,cy+die+cg-1,die*2/14,0,15);
+  for(let k=0;k<15;k++){x.fillStyle=k%2?"#b08a3a":"#8a6a2a";x.fillRect(cx-die-cg-1,cy-die+k*die*2/14,2.4,4);x.fillRect(cx+die+cg-1,cy-die+k*die*2/14,2.4,4)}
+  // heat spreader with brushed finish
+  const g=x.createLinearGradient(cx-die,cy-die,cx+die,cy+die);g.addColorStop(0,"#303843");g.addColorStop(.45,"#181d24");g.addColorStop(1,"#0c0f13");
+  x.fillStyle=g;x.fillRect(cx-die,cy-die,die*2,die*2);
+  x.strokeStyle="rgba(255,255,255,.025)";x.lineWidth=1;for(let yy=cy-die+2;yy<cy+die;yy+=3){x.beginPath();x.moveTo(cx-die,yy);x.lineTo(cx+die,yy);x.stroke()}
+  x.strokeStyle="rgba(255,59,71,.75)";x.lineWidth=1.5;x.strokeRect(cx-die+.5,cy-die+.5,die*2-1,die*2-1);
+  x.strokeStyle="rgba(255,255,255,.1)";x.strokeRect(cx-die+4.5,cy-die+4.5,die*2-9,die*2-9);
+  x.fillStyle="rgba(255,176,32,.7)";x.beginPath();x.moveTo(cx-die+6,cy-die+6);x.lineTo(cx-die+18,cy-die+6);x.lineTo(cx-die+6,cy-die+18);x.fill(); // pin-1 marker
+  // header: name + process
+  x.textBaseline="alphabetic";x.textAlign="left";x.fillStyle="#ffffff";x.font="700 "+Math.round(die*.22)+"px 'Chakra Petch',sans-serif";x.fillText("AM-01",cx-die*.86,cy-die*.58);
+  x.textAlign="right";x.font=TINY;x.fillStyle="rgba(232,237,242,.55)";x.fillText("AI CORE · 7nm · REV 2026",cx+die*.86,cy-die*.6);
+  // core complex: 4x4 cores, each with L1/L2 blocks
+  x.strokeStyle="rgba(255,59,71,.35)";x.lineWidth=1;x.strokeRect(CORE.x-.5,CORE.y-.5,CORE.w+1,CORE.h+1);
+  const cw=CORE.w/4,ch=CORE.h/4;for(let k=0;k<16;k++){const gx=CORE.x+(k%4)*cw,gy=CORE.y+Math.floor(k/4)*ch;
+    x.strokeStyle="rgba(255,255,255,.12)";x.strokeRect(gx+2.5,gy+2.5,cw-5,ch-5);x.fillStyle="rgba(77,232,255,.18)";x.fillRect(gx+cw-9,gy+4,5,ch*.35);x.fillStyle="rgba(255,176,32,.2)";x.fillRect(gx+4,gy+ch-8,cw*.45,4)}
+  x.font=TINY;x.textAlign="left";x.fillStyle="rgba(232,237,242,.4)";x.fillText("CCD0 · 16 CORES",CORE.x,CORE.y+CORE.h+10);
+  // L3 cache: SRAM cell array
+  x.fillStyle="rgba(77,232,255,.05)";x.fillRect(L3.x,L3.y,L3.w,L3.h);x.strokeStyle="rgba(77,232,255,.35)";x.strokeRect(L3.x+.5,L3.y+.5,L3.w-1,L3.h-1);
+  x.fillStyle="rgba(77,232,255,.22)";for(let yy=L3.y+4;yy<L3.y+L3.h-3;yy+=4)for(let xx=L3.x+4;xx<L3.x+L3.w-3;xx+=4)x.fillRect(xx,yy,2,2);
+  x.fillStyle="rgba(232,237,242,.55)";x.fillText("L3 · 32MB",L3.x,L3.y-4);
+  // memory controller + PCIe blocks
+  const by=L3.y+L3.h+8,bh=(CORE.y+CORE.h)-by;
+  [["IMC",0],["PCIe 5.0",1]].forEach(([t,k])=>{const bx=L3.x+k*(L3.w/2+2),bw=L3.w/2-2;x.fillStyle="rgba(255,176,32,.08)";x.fillRect(bx,by,bw,bh);x.strokeStyle="rgba(255,176,32,.4)";x.strokeRect(bx+.5,by+.5,bw-1,bh-1);
+    x.fillStyle="rgba(255,176,32,.8)";x.textAlign="center";x.fillText(t,bx+bw/2,by+bh/2+3)});
+  // data-matrix + serial in the bottom strip
+  x.textAlign="left";let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;const dm=die*.15,dmx=cx-die*.86,dmy=cy+die*.72;
+  for(let i=0;i<8;i++)for(let j=0;j<8;j++)if(i===0||j===7||rnd()>.5){x.fillStyle="rgba(232,237,242,.5)";x.fillRect(dmx+j*dm/8,dmy+i*dm/8,dm/8-.5,dm/8-.5)}
+  x.font=TINY;x.fillStyle="rgba(232,237,242,.45)";x.fillText("SN 0x4A4D",dmx+dm+6,dmy+dm*.6);
   board=c}
 function size(){const r=cv.getBoundingClientRect();dpr=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);layout();buildBoard()}
 size();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(size);
@@ -1426,10 +1451,18 @@ function frame(ts){
   ctx.drawImage(board,0,0,W,H);
   // clock ring
   if(!reduce)ring=(ring+dt*.02)%40;ctx.save();ctx.setLineDash([6,10]);ctx.lineDashOffset=-ring;ctx.strokeStyle="rgba(255,59,71,.45)";ctx.lineWidth=1;ctx.strokeRect(cx-d-20,cy-d-20,(d+20)*2,(d+20)*2);ctx.restore();
-  // 4x4 compute cores light up as data arrives
-  const cs=die*1.1/4,ox=cx-cs*2,oy=cy-die*.42;
-  cores.forEach((c,k)=>{c.lv=Math.max(.06,c.lv-dt*.0012);const gx=ox+(k%4)*cs,gy=oy+Math.floor(k/4)*cs*.55;
-    ctx.fillStyle="rgba(255,59,71,"+(.12+c.lv*.8)+")";ctx.fillRect(gx+1.5,gy+1,cs-3,cs*.55-2)});
+  // 16 compute cores light up as data arrives
+  const cw=CORE.w/4,ch=CORE.h/4;
+  cores.forEach((c,k)=>{c.lv=Math.max(.05,c.lv-dt*.001);const gx=CORE.x+(k%4)*cw,gy=CORE.y+Math.floor(k/4)*ch;
+    ctx.fillStyle="rgba(255,59,71,"+(.08+c.lv*.75)+")";ctx.fillRect(gx+4,gy+4,cw-16,ch-14);
+    if(c.lv>.6){ctx.strokeStyle="rgba(255,120,120,"+(c.lv-.4)+")";ctx.lineWidth=1;ctx.strokeRect(gx+2.5,gy+2.5,cw-5,ch-5)}});
+  // cache sweep
+  const sw=L3.x+((ts*.06)%(L3.w+40))-20;if(sw>L3.x&&sw<L3.x+L3.w){const gr=ctx.createLinearGradient(sw-20,0,sw,0);gr.addColorStop(0,"rgba(77,232,255,0)");gr.addColorStop(1,"rgba(77,232,255,.35)");
+    ctx.fillStyle=gr;ctx.fillRect(Math.max(L3.x,sw-20),L3.y+1,Math.min(20,sw-L3.x),L3.h-2)}
+  // live clock + temperature
+  if(!reduce){freq+=((hover>=0?5.6:4.8)+(Math.random()-.5)*.15-freq)*.05;temp+=((hover>=0?61:42)-temp)*.02}
+  ctx.font="600 "+Math.round(die*.12)+"px 'JetBrains Mono',monospace";ctx.textAlign="right";ctx.textBaseline="alphabetic";ctx.fillStyle="#ff3b47";
+  ctx.fillText(freq.toFixed(2)+" GHz",cx+die*.86,cy+die*.8);ctx.font="9px 'JetBrains Mono',monospace";ctx.fillStyle="rgba(232,237,242,.55)";ctx.fillText(Math.round(temp)+"°C · 14 THREADS",cx+die*.86,cy+die*.92);
   // components
   P.forEach((p,i)=>chip(ctx,p.x,p.y,F[p.f].col,i===hover));
   // hover highlight
