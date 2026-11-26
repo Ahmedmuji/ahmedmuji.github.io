@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Ahmed Mujtaba: AI/ML engineer building agents, document AI pipelines and MCP tools.">
+<meta name="description" content="Ahmed Mujtaba: AI/ML engineer building voice agents, document AI pipelines and MCP tools.">
 <style>*,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Ahmed Mujtaba</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -338,6 +338,35 @@ nav.top{background:rgba(4,5,13,.6)}
 @keyframes sig{30%{opacity:1;transform:scale(1)}70%{opacity:1}to{opacity:0;transform:scale(1.6);filter:blur(8px)}}
 .warp.done{opacity:0;visibility:hidden}
 
+/* ---------- Raabta voice loop ---------- */
+#p-raabta{border-color:rgba(127,231,255,.35)}
+#p-raabta .kind{color:var(--mint)}
+.loop{width:100%;max-width:440px;height:auto;margin:0 auto;display:block;overflow:visible}
+.rb-ring{fill:none;stroke:var(--lilac);stroke-width:1;opacity:.35;stroke-dasharray:2 5}
+.rb-ring2{fill:none;stroke:var(--mint);stroke-width:1.4;opacity:.7;stroke-dasharray:60 568;animation:ringrun 4.8s linear infinite;filter:drop-shadow(0 0 4px var(--mint))}
+@keyframes ringrun{to{stroke-dashoffset:-628}}
+.rb-esc{fill:none;stroke:var(--amber);stroke-width:1;stroke-dasharray:4 4;opacity:.75;animation:escflow 1.2s linear infinite}
+@keyframes escflow{to{stroke-dashoffset:-16}}
+.rb-orbit{fill:none;stroke:var(--faint);stroke-width:.6;stroke-dasharray:2 3;opacity:.6}
+.rb-moons .rb-moon{transform-origin:180px 240px;animation:moon 9s linear infinite}
+.rb-moons .m2{animation-duration:13s}
+.rb-moon circle{fill:var(--amber);filter:drop-shadow(0 0 4px var(--amber))}
+.rb-mlabel{font:9.5px var(--mono);fill:var(--amber);letter-spacing:.04em}
+@keyframes moon{to{transform:rotate(360deg)}}
+.rb-node circle{fill:rgba(8,10,30,.9);stroke:var(--lilac);stroke-width:1.2}
+.rb-node.core circle{stroke:var(--mint);stroke-width:1.6;filter:drop-shadow(0 0 10px rgba(127,231,255,.6))}
+.rb-node.esc circle{stroke:var(--amber)}
+.rb-node .ic{font:14px var(--body);fill:var(--fg);text-anchor:middle}
+.rb-node .lb{font:10px var(--mono);fill:var(--muted);text-anchor:middle;letter-spacing:.04em}
+.rb-node.core .lb{fill:var(--mint)}
+.rb-steps{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 8px;justify-content:center;counter-reset:r}
+.rb-steps li{counter-increment:r;font:.74rem var(--mono);color:var(--muted);padding:5px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(8,10,30,.5)}
+.rb-steps li::before{content:counter(r) " · ";color:var(--mint)}
+.rb-facts{display:flex;flex-wrap:wrap;gap:10px}
+.rb-facts span{font:.78rem var(--mono);color:var(--muted);padding:7px 12px;border-radius:10px;border:1px solid rgba(127,231,255,.25);background:rgba(127,231,255,.06)}
+.rb-facts b{color:var(--mint);font-weight:500}
+@media (prefers-reduced-motion:reduce){.rb-packet{display:none}}
+
 /* ---------- toolkit constellations ---------- */
 .stack{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 @media (max-width:760px){.stack{grid-template-columns:1fr}}
@@ -490,7 +519,7 @@ html[data-sector="contact"]{--n1:rgba(255,170,90,.26);--n2:rgba(214,92,190,.26);
     <div class="stat"><strong data-count="149">149</strong><span>AutoCAD tools exposed to Claude over MCP</span></div>
     <div class="stat"><strong data-count="65.8" data-pre="−" data-suf="%" data-dec="1">−65.8%</strong><span>model size and bandwidth vs FL-LSTM in PrivFed-TCN</span></div>
     <div class="stat"><strong data-count="3">3</strong><span>vendor catalogs matched automatically in Vagent</span></div>
-    <div class="stat"><strong data-count="11">11</strong><span>original projects shipped since 2025</span></div>
+    <div class="stat"><strong data-count="12">12</strong><span>original projects shipped since 2025</span></div>
   </div>
   <div class="marquee" aria-hidden="true"><div id="mq"></div></div>
 
@@ -498,8 +527,42 @@ html[data-sector="contact"]{--n1:rgba(255,170,90,.26);--n2:rgba(214,92,190,.26);
   <section id="work">
     <div class="head">
       <h2>Selected work</h2>
-      <p>Five builds across research, enterprise automation and agent systems. Each one is open on GitHub.</p>
+      <p>Six builds across voice AI, research, enterprise automation and agent systems. Each one is open on GitHub.</p>
     </div>
+
+    <article class="case" id="p-raabta">
+      <div class="txt">
+        <div class="meta"><span class="kind">Flagship · Voice AI · Agents</span><a class="repo" href="https://github.com/Ahmedmuji/RaabtaAI" target="_blank" rel="noopener">RaabtaAI ↗</a></div>
+        <h3>Raabta AI: a voice agent that answers the phone</h3>
+        <p>A voice-first CRM layer for organisations. Callers speak naturally. Raabta transcribes them, reasons with a LangGraph ReAct agent that checks real schedules and policies through RAG and tool calls, and answers back in speech.</p>
+        <p>Every conversation is stored in PostgreSQL. Human agents follow live transcripts on their own dashboard, and the AI hands the call over when it detects frustration, a failed exchange or a question it can't handle.</p>
+        <div class="rb-facts"><span><b>4</b> microservices</span><span><b>REST</b> between services</span><span><b>Live</b> human escalation</span></div>
+        <div class="tags"><span class="tag">LangGraph</span><span class="tag">LangChain</span><span class="tag">Gemini · Groq</span><span class="tag">RAG</span><span class="tag">React + TypeScript</span><span class="tag">Supabase</span><span class="tag">Docker</span></div>
+      </div>
+      <div class="vis">
+        <svg class="loop" viewBox="0 0 360 330" role="img" aria-label="Raabta voice loop: caller to speech recognition, to the agent with RAG and memory, to speech synthesis and back to the caller, with escalation to a human agent">
+          <defs>
+            <radialGradient id="rbglow"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".3" stop-color="#7fe7ff" stop-opacity=".7"/><stop offset="1" stop-color="#7fe7ff" stop-opacity="0"/></radialGradient>
+            <path id="rbpath" d="M180,40 A100,100 0 1,1 179.9,40"/>
+          </defs>
+          <circle cx="180" cy="140" r="100" class="rb-ring"/>
+          <circle cx="180" cy="140" r="100" class="rb-ring2"/>
+          <path d="M200,252 Q260,300 312,292" class="rb-esc"/>
+          <g class="rb-moons"><circle cx="180" cy="240" r="36" class="rb-orbit"/>
+            <g class="rb-moon m1"><circle cx="216" cy="240" r="5"/></g>
+            <g class="rb-moon m2"><circle cx="144" cy="240" r="5"/></g>
+            <text x="222" y="214" class="rb-mlabel">RAG + memory</text></g>
+          <g class="rb-node"><circle cx="180" cy="40" r="17"/><text x="180" y="44" class="ic">◉</text><text x="180" y="12" class="lb">Caller speaks</text></g>
+          <g class="rb-node"><circle cx="280" cy="140" r="17"/><text x="280" y="144" class="ic">≋</text><text x="306" y="144" class="lb" text-anchor="start">ASR</text></g>
+          <g class="rb-node core"><circle cx="180" cy="240" r="20"/><text x="180" y="245" class="ic">✦</text><text x="180" y="300" class="lb">LangGraph agent</text></g>
+          <g class="rb-node"><circle cx="80" cy="140" r="17"/><text x="80" y="144" class="ic">♪</text><text x="54" y="144" class="lb" text-anchor="end">TTS</text></g>
+          <g class="rb-node esc"><circle cx="318" cy="292" r="12"/><text x="318" y="296" class="ic">☎</text><text x="340" y="322" class="lb" text-anchor="end">Human agent</text></g>
+          <circle r="9" fill="url(#rbglow)" class="rb-packet"><animateMotion dur="4.8s" repeatCount="indefinite"><mpath href="#rbpath"/></animateMotion></circle>
+          <circle r="2.6" fill="#fff" class="rb-packet"><animateMotion dur="4.8s" repeatCount="indefinite"><mpath href="#rbpath"/></animateMotion></circle>
+        </svg>
+        <ol class="rb-steps"><li>Speak</li><li>Transcribe</li><li>Reason with RAG, memory and tools</li><li>Speak back</li></ol>
+      </div>
+    </article>
 
     <article class="case" id="p-privfed">
       <div class="txt">
@@ -720,7 +783,7 @@ document.querySelectorAll(".hero h1 .first").forEach(el=>{
 document.querySelectorAll(".hero h1 .ch").forEach((c,i)=>c.style.animationDelay=(i*.045)+"s");
 
 // marquee
-const words=["Agents in orbit","RAG","Model Context Protocol","Federated learning","Differential privacy","Document AI","Computer vision","Voice interfaces","Android automation","Diffusion models","Threat detection"];
+const words=["Agents in orbit","Voice agents","RAG","Model Context Protocol","Federated learning","Differential privacy","Document AI","Computer vision","Voice interfaces","Android automation","Diffusion models","Threat detection"];
 const half=words.map((w,i)=>`<span>${w}</span><b>✦</b>`).join("");
 document.getElementById("mq").innerHTML=half+half;
 
@@ -885,9 +948,9 @@ function simDraw(t){
 /* ---------- agent graph ---------- */
 (()=>{
 const cv=document.getElementById("g"),ctx=cv.getContext("2d");
-const P=[["PrivFed","p-privfed"],["Vagent","p-vagent"],["AutoCAD MCP","p-autocad"],["V.A.S.","p-vas"],["CrisisSim","p-crisis"],["Vertiv","index"],["Notes→Word","index"],["Scalar","index"],["CyberFlow","index"],["OrderBot","index"],["Text2Image","index"]];
+const P=[["PrivFed","p-privfed"],["Vagent","p-vagent"],["AutoCAD MCP","p-autocad"],["V.A.S.","p-vas"],["CrisisSim","p-crisis"],["Vertiv","index"],["Notes→Word","index"],["Scalar","index"],["CyberFlow","index"],["OrderBot","index"],["Text2Image","index"],["Raabta AI","p-raabta"]];
 const T=["Federated","Privacy","PyTorch","RAG","Gemini","Groq","MCP","Agents","Android","OCR","Speech","Streamlit","Security","Vector DB","Diffusion"];
-const E=[[0,"Federated"],[0,"Privacy"],[0,"PyTorch"],[0,"Security"],[1,"RAG"],[1,"Gemini"],[1,"Vector DB"],[2,"MCP"],[2,"Agents"],[3,"Groq"],[3,"Android"],[3,"Speech"],[3,"Agents"],[4,"Agents"],[4,"Groq"],[4,"Gemini"],[5,"RAG"],[5,"Vector DB"],[5,"Groq"],[6,"OCR"],[6,"PyTorch"],[7,"RAG"],[7,"Speech"],[7,"Streamlit"],[7,"Groq"],[7,"Vector DB"],[8,"Security"],[8,"Streamlit"],[9,"Speech"],[9,"RAG"],[10,"Diffusion"],[10,"Streamlit"],[10,"PyTorch"]];
+const E=[[0,"Federated"],[0,"Privacy"],[0,"PyTorch"],[0,"Security"],[1,"RAG"],[1,"Gemini"],[1,"Vector DB"],[2,"MCP"],[2,"Agents"],[3,"Groq"],[3,"Android"],[3,"Speech"],[3,"Agents"],[4,"Agents"],[4,"Groq"],[4,"Gemini"],[5,"RAG"],[5,"Vector DB"],[5,"Groq"],[6,"OCR"],[6,"PyTorch"],[7,"RAG"],[7,"Speech"],[7,"Streamlit"],[7,"Groq"],[7,"Vector DB"],[8,"Security"],[8,"Streamlit"],[9,"Speech"],[9,"RAG"],[10,"Diffusion"],[10,"Streamlit"],[10,"PyTorch"],[11,"Agents"],[11,"RAG"],[11,"Speech"],[11,"Groq"],[11,"Gemini"]];
 let W=0,H=0,dpr=1;const N=[];
 P.forEach((p,i)=>N.push({label:p[0],target:p[1],proj:1,x:0,y:0,vx:0,vy:0}));
 T.forEach(t=>N.push({label:t,proj:0,x:0,y:0,vx:0,vy:0}));
