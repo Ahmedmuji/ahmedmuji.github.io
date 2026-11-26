@@ -1342,7 +1342,12 @@ function simDraw(t){
 window.__vis=window.__vis||{};
 const visIO=new IntersectionObserver(es=>es.forEach(en=>{en.target.classList.toggle("offscreen",!en.isIntersecting);if(en.target.id)window.__vis[en.target.id]=en.isIntersecting}),{rootMargin:"120px"});
 document.querySelectorAll(".case,.graph,.group,.gate,.contact,.marquee,#sim").forEach(el=>visIO.observe(el));
-(function loop(t){if(!document.hidden&&window.__vis.sim!==false){if(!reduce)simStep();simDraw(t||0)}if(!reduce)requestAnimationFrame(loop)})();
+// the project starts collapsed, so the canvas has no size until it is opened: size it (and place the
+// fires, survivors and agents) the first time it becomes visible, and again whenever it resizes
+function fitSim(){const bw=sim.getBoundingClientRect().width;if(!bw||Math.abs(bw-SW)<=1)return SW>40;const was=SW;ssize();
+  if(was<40){fires.splice(0,fires.length,cell(),cell(),cell());surv.splice(0,surv.length,cell(),cell(),cell(),cell());agents.forEach(a=>{a.x=a.p.x;a.y=a.p.y;a.to=null;a.carry=false})}
+  return SW>40}
+(function loop(t){if(!document.hidden&&window.__vis.sim!==false&&fitSim()){if(!reduce)simStep();simDraw(t||0)}requestAnimationFrame(loop)})();
 })();
 
 /* ---------- AM-01 processor: every project wired into the core ---------- */
