@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Ahmed Mujtaba: AI/ML engineer building voice agents, document AI pipelines and MCP tools.">
+<meta name="description" content="Ahmed Mujtaba: AI/ML engineer designing and building intelligent systems end to end, with a focus on agents, voice and retrieval.">
 <style>*,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Ahmed Mujtaba</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -509,7 +509,7 @@ html[data-sector="contact"]{--n1:rgba(255,170,90,.26);--n2:rgba(24,86,196,.26);-
     <div>
       <div class="eyebrow">AI / ML engineer · Premier Systems</div>
       <h1><span class="first">Ahmed</span><span class="last">Mujtaba</span></h1>
-      <p class="thesis">I build AI that does real work. <b>Agents that coordinate</b>, <b>pipelines that read RFPs</b> and match them to hardware catalogs, and <b>tools that drive AutoCAD and Android</b> from plain language.</p>
+      <p class="thesis">I design and build <b>intelligent systems end to end</b>, taking ideas from research to production. My work centres on <b>AI agents</b>, <b>voice</b> and <b>retrieval</b>, and the engineering that makes them reliable.</p>
       <div class="cta">
         <a class="btn primary" href="#work">See selected work ↓</a>
         <a class="btn" href="https://github.com/Ahmedmuji" target="_blank" rel="noopener">GitHub ↗</a>
@@ -824,12 +824,12 @@ let secQ=false;addEventListener("scroll",()=>{if(secQ)return;secQ=true;requestAn
 function sky(t){
   if(document.hidden){requestAnimationFrame(sky);return}
   s2.clearRect(0,0,VW,VH);const sy=scrollY;
-  vel+=((sy-lastSY)-vel)*.15;lastSY=sy;burst*=.93;
-  const stretch=Math.max(-70,Math.min(70,vel*1.4+burst*55*Math.sign(vel||1))),H2=VH*2,warp=Math.abs(stretch)>2.5;
+  vel+=((sy-lastSY)-vel)*.08;lastSY=sy;burst*=.94;
+  const raw=vel*1.4+burst*55*Math.sign(vel||1),stretch=Math.max(-70,Math.min(70,Math.abs(raw)<1.5?0:raw-Math.sign(raw)*1.5)),H2=VH*2;
+  s2.lineCap="round";
   for(const st of stars){const y=((st.y-sy*st.sp)%H2+H2)%H2;if(y>VH+40)continue;
     const a=reduce?.75:.35+.65*Math.abs(Math.sin(t/1000*st.s+st.p));s2.globalAlpha=a*(.45+st.z*.55);
-    if(warp){const L=stretch*(.12+st.z*.9);s2.strokeStyle=st.c;s2.lineWidth=st.r*1.1;s2.beginPath();s2.moveTo(st.x,y);s2.lineTo(st.x,y+L);s2.stroke();continue}
-    s2.fillStyle=st.c;s2.beginPath();s2.arc(st.x,y,st.r,0,6.283);s2.fill();
+    const L=stretch*(.12+st.z*.9);s2.strokeStyle=st.c;s2.lineWidth=st.r*2;s2.beginPath();s2.moveTo(st.x,y);s2.lineTo(st.x,y+L+.01);s2.stroke();
     if(st.big&&a>.75){s2.globalAlpha=(a-.75)*1.6;s2.fillRect(st.x-6,y-.35,12,.7);s2.fillRect(st.x-.35,y-6,.7,12)}}
   s2.globalAlpha=1;
   if(!reduce){
@@ -1037,16 +1037,17 @@ function frame(ts){
   ctx.save();ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ctx.translate(cx,cy);ctx.scale(1,TILT);ctx.rotate(rot);ctx.drawImage(disk,-R,-R,R*2,R*2);ctx.restore();
   // arm names at the arm tips
   ctx.font="10px 'JetBrains Mono',monospace";ctx.textAlign="center";
-  ARMS.forEach((A,k)=>{const q=place(R*.99,armAngle(k,1)+rot);ctx.globalAlpha=hover>=0?.25:.6;ctx.fillStyle=A.col;const lx=Math.max(70,Math.min(W-70,q.x));ctx.fillText(A.name.toUpperCase(),lx,q.y+(q.depth>0?16:-10))});
+  ARMS.forEach((A,k)=>{const q=place(R*.99,armAngle(k,1)+rot);ctx.globalAlpha=hover>=0?.25:.6;ctx.fillStyle=A.col;const lx=Math.max(70,Math.min(W-70,q.x));ctx.fillText(A.name.toUpperCase(),lx,q.y+3+q.depth*13)});
   ctx.globalAlpha=1;
   // project stars
   PROJ.forEach(p=>{p.pos=place(R*(.06+p.u*.92),armAngle(p.arm,p.u)+rot)});
   const order=PROJ.map((p,i)=>i).sort((a,b)=>PROJ[a].pos.depth-PROJ[b].pos.depth);
-  order.forEach(i=>{const p=PROJ[i],A=ARMS[p.arm],tw=.5+.5*Math.sin(t*.05+i*1.7),dim=hover>=0&&i!==hover,
-      r=(p.big?8.5:6.5)*S*(1+p.pos.depth*.12)*(i===hover?1.45:1)*(.92+.08*tw);
-    ctx.globalAlpha=dim?.35:1;star(p.pos.x,p.pos.y,r,A.col,tw);
+  order.forEach(i=>{const p=PROJ[i],A=ARMS[p.arm],tw=.5+.5*Math.sin(t*.025+i*1.7),dim=hover>=0&&i!==hover,
+      hs=(p.hs=(p.hs||1)+(((i===hover)?1.4:1)-(p.hs||1))*(1-Math.pow(.82,dt/16.7))),
+      r=(p.big?8.5:6.5)*S*(1+p.pos.depth*.1)*hs;
+    ctx.globalAlpha=(dim?.35:1)*(.82+.18*tw);star(p.pos.x,p.pos.y,r,A.col,tw);ctx.globalAlpha=dim?.35:1;
     ctx.font=`italic 600 ${Math.round((p.big?15:13.5)*Math.min(1.25,S))}px 'Cormorant Garamond',serif`;ctx.textAlign="center";ctx.fillStyle="#eef4ff";
-    ctx.fillText(p.n,p.pos.x,p.pos.y-r*1.9-3);
+    ctx.fillText(p.n,p.pos.x,p.pos.y-(p.big?8.5:6.5)*S*1.9-6);
     if(i===hover&&mfade<1)mfade=Math.min(1,mfade+dt/220);
     if(i===hover){const mr=(r*3+14*S)*(.7+.3*mfade);ctx.globalAlpha=.4*mfade;ctx.strokeStyle=A.col;ctx.lineWidth=.6;ctx.setLineDash([2,3]);ctx.beginPath();ctx.ellipse(p.pos.x,p.pos.y,mr,mr*.75,0,0,6.283);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=mfade;
       ctx.font=`${Math.round(10*Math.min(1.2,S))}px 'JetBrains Mono',monospace`;ctx.fillStyle="#ffd98a";
