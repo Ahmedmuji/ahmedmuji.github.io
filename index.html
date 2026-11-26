@@ -588,7 +588,7 @@ html[data-sector="contact"]{--n1:rgba(255,170,90,.26);--n2:rgba(24,86,196,.26);-
   <a class="mark" href="#top"><i aria-hidden="true"></i>Ahmed Mujtaba</a>
   <ul><li><a href="#work">Work</a></li><li><a href="#experience">Experience</a></li><li><a href="#index">Index</a></li><li><a href="#stack">Stack</a></li><li><a href="#contact">Contact</a></li></ul>
 </div><div class="progress" id="progress" aria-hidden="true"></div></nav>
-<div class="cursor" id="cursor" aria-hidden="true"></div>
+
 <div class="hud" id="hud" aria-hidden="true"></div>
 <div class="flash" id="flash" aria-hidden="true"></div>
 <ul class="rail" id="rail" aria-label="Sections">
@@ -1086,7 +1086,7 @@ const setP=()=>{const h=document.documentElement.scrollHeight-innerHeight;prog.s
 let pQ=false;addEventListener("scroll",()=>{if(pQ)return;pQ=true;requestAnimationFrame(()=>{pQ=false;setP()})},{passive:true});setP();
 
 // orbiting cursor
-const cur=document.getElementById("cursor");
+const cur=document.getElementById("cursor")||document.createElement("div");
 addEventListener("pointermove",e=>{cur.style.setProperty("--cx",e.clientX+"px");cur.style.setProperty("--cy",e.clientY+"px");
   const b=!!(e.target.closest&&e.target.closest("a,button,canvas,.case"));if(b!==cur._b){cur._b=b;cur.classList.toggle("big",b)}},{passive:true});
 
