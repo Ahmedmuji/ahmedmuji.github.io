@@ -444,7 +444,7 @@ nav.top{background:rgba(4,5,13,.6)}
 .const .bg{fill:var(--faint);opacity:.5}
 @keyframes twinkle{from{opacity:.35;transform:scale(.8)}to{opacity:.95;transform:scale(1.15)}}
 body{overflow-x:clip}
-main,footer{overflow-x:clip}
+main>section{overflow-x:clip;overflow-clip-margin:48px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* ---------- big screens: let the layout grow with the window ---------- */
@@ -1148,7 +1148,7 @@ function frame(ts){
   ctx.save();ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ctx.translate(cx,cy);ctx.scale(1,TILT);ctx.rotate(rot);ctx.drawImage(disk,-R,-R,R*2,R*2);ctx.restore();
   // arm names at the arm tips
   ctx.font="10px 'JetBrains Mono',monospace";ctx.textAlign="center";
-  ARMS.forEach((A,k)=>{const q=place(R*.99,armAngle(k,1)+rot);ctx.globalAlpha=hover>=0?.25:.6;const lx=Math.max(80,Math.min(W-80,q.x));drawText(A.name.toUpperCase(),"10px 'JetBrains Mono',monospace",A.col,lx,q.y+q.depth*13,'center')});
+  ARMS.forEach((A,k)=>{const q=place(R*1.06,armAngle(k,1)+rot),f="10px 'JetBrains Mono',monospace",sp=textSprite(A.name.toUpperCase(),f,A.col),hw=sp.w/2+10;ctx.globalAlpha=hover>=0?.25:.6;const lx=Math.max(hw,Math.min(W-hw,q.x)),ly=Math.max(14,Math.min(H-40,q.y+q.depth*16));drawText(A.name.toUpperCase(),f,A.col,lx,ly,'center')});
   ctx.globalAlpha=1;
   // project stars
   PROJ.forEach(p=>{p.pos=place(R*(.06+p.u*.92),armAngle(p.arm,p.u)+rot)});
