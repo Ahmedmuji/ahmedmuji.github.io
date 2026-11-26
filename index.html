@@ -375,6 +375,52 @@ nav.top{background:rgba(4,5,13,.6)}
 @media (prefers-reduced-motion:reduce){.rb-packet{display:none}}
 
 .offscreen,.offscreen *,.offscreen *::before,.offscreen *::after{animation-play-state:paused!important}
+/* ---------- experience: a trajectory through time ---------- */
+.xp-line{list-style:none;margin:0;padding:0;position:relative;display:grid;gap:22px}
+.xp-line::before{content:"";position:absolute;left:calc(170px + 11px);top:8px;bottom:8px;width:2px;
+  background:linear-gradient(var(--mint),var(--lilac) 40%,rgba(168,203,255,.15));border-radius:2px}
+.xp-line::after{content:"";position:absolute;left:calc(170px + 8px);top:0;width:8px;height:8px;border-radius:50%;background:#fff;
+  box-shadow:0 0 12px 4px var(--mint);animation:comet 6s linear infinite;will-change:transform}
+@keyframes comet{from{transform:translateY(0);opacity:0}8%{opacity:1}92%{opacity:1}to{transform:translateY(var(--xph,900px));opacity:0}}
+.xp{display:grid;grid-template-columns:170px 24px minmax(0,1fr);gap:0 18px;align-items:start;position:relative}
+.xp .when{grid-column:1;text-align:right;padding-top:20px;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.xp .when .mono{font:.78rem var(--mono);color:var(--muted);letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.xp .live{font:500 .66rem var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--bg);background:var(--mint);padding:3px 8px;border-radius:999px;box-shadow:0 0 14px -2px var(--mint)}
+.xp::before{content:"";grid-column:2;grid-row:1;justify-self:center;margin-top:22px;width:14px;height:14px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--lilac);box-shadow:0 0 10px rgba(59,123,255,.6);position:relative;z-index:1}
+.xp.now::before{background:var(--mint);border-color:#fff;box-shadow:0 0 0 6px rgba(127,231,255,.18),0 0 18px 4px var(--mint);animation:beacon 2.4s ease-in-out infinite}
+.xp.edu::before{border-color:var(--amber);box-shadow:0 0 10px rgba(255,217,138,.6)}
+@keyframes beacon{50%{box-shadow:0 0 0 12px rgba(127,231,255,0),0 0 24px 6px var(--mint)}}
+.xp-card{grid-column:3;grid-row:1;padding:22px 26px;border:1px solid var(--line);border-radius:18px;
+  background:linear-gradient(160deg,rgba(18,34,82,.55),rgba(8,12,30,.78));transition:border-color .3s,transform .3s}
+.xp-card:hover{border-color:rgba(127,231,255,.45);transform:translateX(4px)}
+.xp.now .xp-card{border-color:rgba(127,231,255,.35);box-shadow:0 20px 60px -30px rgba(127,231,255,.4)}
+.xp-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;margin-bottom:10px}
+.xp-top h3{font:600 1.35rem/1.2 var(--body);letter-spacing:-.01em;margin:0}
+.xp-top .role{font:italic 600 1.15rem var(--display);color:var(--lilac)}
+.xp.edu .xp-top .role{color:var(--amber)}
+.xp-card p{margin:0;color:var(--muted)}
+.xp-card ul{margin:0;padding-left:18px;color:var(--muted);display:grid;gap:6px}
+.xp-card ul li::marker{color:var(--mint)}
+.xp-metric{display:inline-flex;align-items:baseline;gap:10px;margin-top:14px;padding:8px 14px;border-radius:12px;border:1px solid rgba(255,217,138,.3);background:rgba(255,217,138,.07)}
+.xp-metric b{font:600 1.3rem var(--display);color:var(--amber);font-variant-numeric:lining-nums}
+.xp-metric span{font:.74rem var(--mono);color:var(--muted)}
+.xp-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.xp-tags span{font:.72rem var(--mono);color:var(--muted);padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(8,10,30,.5)}
+.xp-tags.certs span{border-color:rgba(255,217,138,.25);color:var(--amber)}
+@media (max-width:760px){
+  .xp-line::before,.xp-line::after{left:11px}
+  .xp{grid-template-columns:24px minmax(0,1fr);gap:6px 14px}
+  .xp::before{grid-column:1;grid-row:1 / span 2}
+  .xp .when{grid-column:2;grid-row:1;text-align:left;align-items:flex-start;flex-direction:row;padding-top:18px}
+  .xp-card{grid-column:2;grid-row:2;padding:18px}
+}
+@supports (animation-timeline: view()){
+  .xp{animation:fromL linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
+  .xp:nth-child(even){animation-name:fromR}
+}
+@media (prefers-reduced-motion:reduce){.xp-line::after{display:none}}
+
 /* ---------- toolkit constellations ---------- */
 .stack{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 @media (max-width:760px){.stack{grid-template-columns:1fr}}
@@ -398,6 +444,7 @@ nav.top{background:rgba(4,5,13,.6)}
 .const .bg{fill:var(--faint);opacity:.5}
 @keyframes twinkle{from{opacity:.35;transform:scale(.8)}to{opacity:.95;transform:scale(1.15)}}
 body{overflow-x:clip}
+main,footer{overflow-x:clip}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* ---------- big screens: let the layout grow with the window ---------- */
@@ -433,6 +480,7 @@ body{overflow-x:clip}
 @property --n3{syntax:"<color>";initial-value:rgba(24,86,196,.22);inherits:true}
 html{transition:--n1 1.6s ease,--n2 1.6s ease,--n3 1.6s ease}
 html[data-sector="work"]{--n1:rgba(70,110,255,.42);--n2:rgba(255,217,138,.16);--n3:rgba(59,123,255,.26)}
+html[data-sector="experience"]{--n1:rgba(30,150,200,.34);--n2:rgba(59,123,255,.26);--n3:rgba(255,217,138,.12)}
 html[data-sector="index"]{--n1:rgba(24,86,196,.36);--n2:rgba(59,123,255,.24);--n3:rgba(127,231,255,.16)}
 html[data-sector="stack"]{--n1:rgba(40,200,220,.30);--n2:rgba(59,123,255,.22);--n3:rgba(70,110,255,.24)}
 html[data-sector="contact"]{--n1:rgba(255,170,90,.26);--n2:rgba(24,86,196,.26);--n3:rgba(59,123,255,.34)}
@@ -490,7 +538,7 @@ html[data-sector="contact"]{--n1:rgba(255,170,90,.26);--n2:rgba(24,86,196,.26);-
 <div class="glow" aria-hidden="true"></div>
 <nav class="top"><div class="wrap">
   <a class="mark" href="#top"><i aria-hidden="true"></i>Ahmed Mujtaba</a>
-  <ul><li><a href="#work">Work</a></li><li><a href="#index">Index</a></li><li><a href="#stack">Stack</a></li><li><a href="#contact">Contact</a></li></ul>
+  <ul><li><a href="#work">Work</a></li><li><a href="#experience">Experience</a></li><li><a href="#index">Index</a></li><li><a href="#stack">Stack</a></li><li><a href="#contact">Contact</a></li></ul>
 </div><div class="progress" id="progress" aria-hidden="true"></div></nav>
 <div class="cursor" id="cursor" aria-hidden="true"></div>
 <div class="hud" id="hud" aria-hidden="true"></div>
@@ -498,6 +546,7 @@ html[data-sector="contact"]{--n1:rgba(255,170,90,.26);--n2:rgba(24,86,196,.26);-
 <ul class="rail" id="rail" aria-label="Sections">
   <li><a href="#top" data-s="top"><span>Home</span></a></li>
   <li><a href="#work" data-s="work"><span>Selected work</span></a></li>
+  <li><a href="#experience" data-s="experience"><span>Experience</span></a></li>
   <li><a href="#index" data-s="index"><span>Everything else</span></a></li>
   <li><a href="#stack" data-s="stack"><span>Toolkit</span></a></li>
   <li><a href="#contact" data-s="contact"><span>Contact</span></a></li>
@@ -672,6 +721,59 @@ html[data-sector="contact"]{--n1:rgba(255,170,90,.26);--n2:rgba(24,86,196,.26);-
     </article>
   </section>
 
+  <div class="gate" aria-hidden="true"><div class="horizon"></div><div class="label">Entering · Experience</div></div>
+  <section id="experience">
+    <div class="head">
+      <h2>Experience</h2>
+      <p>From internships to production systems used on real client work.</p>
+    </div>
+    <ol class="xp-line">
+      <li class="xp now">
+        <div class="when"><span class="mono">Sep 2026 – Present</span><span class="live">Current</span></div>
+        <div class="xp-card">
+          <div class="xp-top"><h3>MultiVision World</h3><span class="role">Lead Software Developer</span></div>
+          <p>Building a full-stack GRC platform that brings risk, compliance, audit and evidence workflows together, with AI-powered automation. I own the backend APIs, database workflows, integrations and frontend features end to end.</p>
+          <div class="xp-tags"><span>GRC platform</span><span>AI automation</span><span>Full stack</span></div>
+        </div>
+      </li>
+      <li class="xp">
+        <div class="when"><span class="mono">Mar 2026 – Aug 2026</span></div>
+        <div class="xp-card">
+          <div class="xp-top"><h3>Premier Systems Limited</h3><span class="role">Junior AI Engineer</span></div>
+          <ul>
+            <li>Built and deployed to production an LLM information-extraction pipeline used on real client RFPs: PDF parsing, semantic retrieval with Sentence-Transformers, then structured extraction with Gemini.</li>
+            <li>Matched requirements against Fortinet, Juniper and Vertiv hardware catalogs using embedding similarity, with citation links back to source pages so reviewers could verify every answer.</li>
+            <li>Packaged the mapping and enrichment logic as a reusable component for future bids.</li>
+          </ul>
+          <div class="xp-metric"><b>Days → hours</b><span>manual technical review time per RFP</span></div>
+        </div>
+      </li>
+      <li class="xp">
+        <div class="when"><span class="mono">Jul 2025 – Aug 2025</span></div>
+        <div class="xp-card">
+          <div class="xp-top"><h3>VanganceSoft, NASTP</h3><span class="role">AI Engineer Intern</span></div>
+          <p>Built a restaurant voice-ordering bot on an open-source speech-to-text and text-to-speech pipeline, and benchmarked 4 model configurations on accuracy and latency.</p>
+          <div class="xp-metric"><b>2% WER · 230 ms</b><span>word error rate and response time</span></div>
+        </div>
+      </li>
+      <li class="xp">
+        <div class="when"><span class="mono">Jul 2024 – Aug 2024</span></div>
+        <div class="xp-card">
+          <div class="xp-top"><h3>Soofto</h3><span class="role">AI Engineer Intern</span></div>
+          <p>Built RAG pipelines for document-grounded question answering over PDF, Word and text files, and an AI chatbot that combined an LLM API, speech recognition and Pandas AI for natural-language data analytics.</p>
+        </div>
+      </li>
+      <li class="xp edu">
+        <div class="when"><span class="mono">Aug 2022 – Jun 2026</span></div>
+        <div class="xp-card">
+          <div class="xp-top"><h3>FAST National University (NUCES)</h3><span class="role">BS Artificial Intelligence</span></div>
+          <p>Coursework in machine learning, deep learning, agentic AI and data analytics. Teaching Assistant for the Agentic AI course, reviewing student projects and coaching agent design.</p>
+          <div class="xp-tags certs"><span>DeepLearning.AI · Generative AI</span><span>Google · ML &amp; Deep Learning</span><span>Google · Prompt Engineering</span><span>IBM · Cybersecurity Analyst</span><span>Fortinet · InfoSec</span></div>
+        </div>
+      </li>
+    </ol>
+  </section>
+
   <div class="gate" aria-hidden="true"><div class="horizon"></div><div class="label">Entering · Everything else</div></div>
   <section id="index">
     <div class="head">
@@ -809,7 +911,7 @@ skySize();let rsT;addEventListener("resize",()=>{clearTimeout(rsT);rsT=setTimeou
 addEventListener("pointermove",e=>{if(reduce)return;if(dust.length<90)dust.push({x:e.clientX,y:e.clientY,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6+.2,l:1})},{passive:true});
 let lastSY=scrollY,vel=0,burst=0;
 // sector tracking: nebula colour shift, warp burst, light sweep, HUD and rail
-const sectors=[["top","Home","00"],["work","Selected work","01"],["index","Everything else","02"],["stack","Toolkit","03"],["contact","Contact","04"]];
+const sectors=[["top","Home","00"],["work","Selected work","01"],["experience","Experience","02"],["index","Everything else","03"],["stack","Toolkit","04"],["contact","Contact","05"]];
 const hud=document.getElementById("hud"),flash=document.getElementById("flash"),railLinks=[...document.querySelectorAll("#rail a")];
 let current=null,hudT;
 function enter(id){if(id===current)return;const first=current===null;current=id;
@@ -843,6 +945,8 @@ function sky(t){
   requestAnimationFrame(sky)}
 requestAnimationFrame(sky);
 
+// experience comet length
+const xpl=document.querySelector('.xp-line');const setXp=()=>xpl&&xpl.style.setProperty('--xph',(xpl.offsetHeight-12)+'px');setXp();addEventListener('resize',setXp);
 // scroll comet
 const prog=document.getElementById("progress");
 const setP=()=>{const h=document.documentElement.scrollHeight-innerHeight;prog.style.setProperty("--p",h>0?scrollY/h:0)};
