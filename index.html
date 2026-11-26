@@ -516,10 +516,10 @@ html[data-sector="contact"]{--n1:rgba(255,170,90,.26);--n2:rgba(24,86,196,.26);-
         <a class="btn" href="https://www.linkedin.com/in/ahmed-mujtaba-61640b365/" target="_blank" rel="noopener">LinkedIn ↗</a>
       </div>
     </div>
-    <div class="graph" id="gwrap" aria-label="Solar system of projects: each planet is a project, its moons are the techniques it uses">
+    <div class="graph" id="gwrap" aria-label="Spiral galaxy of projects: each arm is a field, each bright star a project; hover a star to see its techniques">
       
       <canvas id="g" style="position:relative"></canvas>
-      <div class="legend"><span><b>●</b> planet = project&nbsp;&nbsp;· moon = technique</span><span>hover a planet · click to open</span></div>
+      <div class="legend"><span><b>✦</b> star = project&nbsp;&nbsp;· arm = field</span><span>hover a star · click to open</span></div>
     </div>
   </header>
 
@@ -963,86 +963,94 @@ document.querySelectorAll(".case,.graph,.group,.gate,.contact,.marquee,#sim").fo
 (function loop(t){if(!document.hidden&&window.__vis.sim!==false){if(!reduce)simStep();simDraw(t||0)}if(!reduce)requestAnimationFrame(loop)})();
 })();
 
-/* ---------- project solar system ---------- */
+/* ---------- project galaxy (milky way) ---------- */
 (()=>{
 const cv=document.getElementById("g"),ctx=cv.getContext("2d");
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
-const ORBITS=[{name:"agents & voice",speed:.0026},{name:"documents & retrieval",speed:.0017},{name:"security · research · generation",speed:.0011}];
-const PLANETS=[
- {n:"Raabta AI",t:"p-raabta",o:0,r:11,c:["#d9fbff","#3fd0f0","#0b4d78"],ring:1,m:["LangGraph","RAG","Speech","Gemini","Supabase"]},
- {n:"V.A.S.",t:"p-vas",o:0,r:7,c:["#e6f0ff","#6f9dff","#1c3a8a"],m:["Groq","ADB","Speech"]},
- {n:"CrisisSim",t:"p-crisis",o:0,r:8,c:["#ffe9c9","#ff9a5c","#7a2f12"],m:["Agents","ReAct","Mesa"]},
- {n:"AutoCAD MCP",t:"p-autocad",o:0,r:8.5,c:["#fff3d1","#ffd98a","#8a5a12"],m:["MCP","COM API","ezdxf"]},
- {n:"Vagent",t:"p-vagent",o:1,r:9.5,c:["#e8ffef","#58d6a4","#0d5c43"],ring:1,m:["Gemini","RAG","Embeddings"]},
- {n:"Vertiv",t:"index",o:1,r:6.5,c:["#eef3ff","#9bb7ff","#2a3f8f"],m:["ChromaDB","RAG","Ollama"]},
- {n:"Scalar",t:"index",o:1,r:7,c:["#f6eaff","#b99cff","#3d2a86"],m:["FAISS","PandasAI","Speech"]},
- {n:"Notes→Word",t:"index",o:1,r:6.5,c:["#fff","#c9d6e8","#46546b"],m:["PaddleOCR","CRNN","Next.js"]},
- {n:"PrivFed",t:"p-privfed",o:2,r:9,c:["#fde9ff","#e58cff","#5a1a72"],m:["TCN","DP-SGD","Federated"]},
- {n:"CyberFlow",t:"index",o:2,r:7,c:["#ffe3e3","#ff6b6b","#6e1414"],m:["MITRE","Streamlit"]},
- {n:"Text2Image",t:"index",o:2,r:7.5,c:["#fff7dc","#ffcf6b","#7a4b0a"],m:["SDXL","gRPC","Docker"]},
- {n:"OrderBot",t:"index",o:2,r:6,c:["#e5fff9","#7fe7ff","#0f5560"],m:["Flask","gTTS","LLM"]}];
-const per=[0,0,0];PLANETS.forEach(p=>{p.k=per[p.o]++});
-PLANETS.forEach(p=>{p.a=(p.k/per[p.o])*Math.PI*2+p.o*.9;p.ma=Math.random()*6.28});
-let W=0,H=0,dpr=1,cx=0,cy=0,RX=[],TILT=.62,S=1,belt=[];
+const ARMS=[{name:"agents & voice",col:"#7fe7ff",rgb:[127,231,255]},{name:"documents & retrieval",col:"#a8cbff",rgb:[168,203,255]},{name:"security · research · generation",col:"#ffd98a",rgb:[255,217,138]}];
+const PROJ=[
+ {n:"Raabta AI",t:"p-raabta",arm:0,u:.30,big:1,m:["LangGraph","RAG","Speech","Gemini","Supabase"]},
+ {n:"V.A.S.",t:"p-vas",arm:0,u:.50,m:["Groq","ADB","Speech"]},
+ {n:"CrisisSim",t:"p-crisis",arm:0,u:.68,m:["Agents","ReAct","Mesa"]},
+ {n:"AutoCAD MCP",t:"p-autocad",arm:0,u:.86,m:["MCP","COM API","ezdxf"]},
+ {n:"Vagent",t:"p-vagent",arm:1,u:.32,big:1,m:["Gemini","RAG","Embeddings"]},
+ {n:"Vertiv",t:"index",arm:1,u:.52,m:["ChromaDB","RAG","Ollama"]},
+ {n:"Scalar",t:"index",arm:1,u:.70,m:["FAISS","PandasAI","Speech"]},
+ {n:"Notes→Word",t:"index",arm:1,u:.88,m:["PaddleOCR","CRNN","Next.js"]},
+ {n:"PrivFed",t:"p-privfed",arm:2,u:.34,big:1,m:["TCN","DP-SGD","Federated"]},
+ {n:"CyberFlow",t:"index",arm:2,u:.54,m:["MITRE","Streamlit"]},
+ {n:"Text2Image",t:"index",arm:2,u:.72,m:["SDXL","gRPC","Docker"]},
+ {n:"OrderBot",t:"index",arm:2,u:.90,m:["Flask","gTTS","LLM"]}];
+const TURNS=3.6;                                   // how far each arm winds
+const armAngle=(k,u)=>k*(Math.PI*2/3)+u*TURNS;    // log-spiral-ish arm centreline
+let W=0,H=0,dpr=1,cx=0,cy=0,R=0,TILT=.58,S=1,disk=null,rot=0,spin=1,hover=-1,t=0;
+const gauss=()=>{let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+function buildDisk(){   // render the galaxy once; each frame only rotates this image
+  const D=Math.ceil(R*2*dpr),c=document.createElement("canvas");c.width=c.height=D;const x=c.getContext("2d");x.scale(dpr,dpr);x.translate(R,R);
+  // halo + core
+  let g=x.createRadialGradient(0,0,0,0,0,R);g.addColorStop(0,"rgba(255,236,200,.55)");g.addColorStop(.12,"rgba(255,214,160,.28)");
+  g.addColorStop(.35,"rgba(90,140,255,.10)");g.addColorStop(1,"rgba(40,80,200,0)");x.fillStyle=g;x.beginPath();x.arc(0,0,R,0,6.283);x.fill();
+  x.globalCompositeOperation="lighter";
+  // soft nebulous haze along each arm
+  ARMS.forEach((A,k)=>{for(let i=0;i<110;i++){const u=.06+Math.random()*.94,r=R*(.1+u*.86),th=armAngle(k,u)+gauss()*.18,px=Math.cos(th)*r,py=Math.sin(th)*r,rad=R*(.05+Math.random()*.07);
+    const h=x.createRadialGradient(px,py,0,px,py,rad);h.addColorStop(0,`rgba(${A.rgb[0]},${A.rgb[1]},${A.rgb[2]},${.07+Math.random()*.09})`);h.addColorStop(1,"rgba(0,0,0,0)");
+    x.fillStyle=h;x.beginPath();x.arc(px,py,rad,0,6.283);x.fill()}});
+  // stars along the arms
+  const N=Math.round(2800*Math.min(1.4,R/260));
+  for(let i=0;i<N;i++){const k=i%3,A=ARMS[k],u=Math.pow(Math.random(),.85),r=R*(.06+u*.92)+gauss()*R*.035*(1-u*.4),
+    th=armAngle(k,u)+gauss()*(.22-.1*u),px=Math.cos(th)*r,py=Math.sin(th)*r,core=1-Math.min(1,r/(R*.35));
+    const cr=Math.round(A.rgb[0]+(255-A.rgb[0])*core),cg=Math.round(A.rgb[1]+(236-A.rgb[1])*core),cb=Math.round(A.rgb[2]+(205-A.rgb[2])*core);
+    const sz=Math.random()<.04?1.6:.5+Math.random()*.8;x.fillStyle=`rgba(${cr},${cg},${cb},${.35+Math.random()*.55})`;x.fillRect(px,py,sz,sz)}
+  // scattered field stars between the arms
+  for(let i=0;i<500;i++){const r=R*Math.sqrt(Math.random())*.95,th=Math.random()*6.283;x.fillStyle=`rgba(220,232,255,${.15+Math.random()*.3})`;x.fillRect(Math.cos(th)*r,Math.sin(th)*r,.7,.7)}
+  // bright core
+  g=x.createRadialGradient(0,0,0,0,0,R*.16);g.addColorStop(0,"rgba(255,255,245,.95)");g.addColorStop(.35,"rgba(255,226,170,.6)");g.addColorStop(1,"rgba(255,190,120,0)");
+  x.fillStyle=g;x.beginPath();x.arc(0,0,R*.16,0,6.283);x.fill();
+  // dark dust lanes hugging the inner edge of each arm
+  x.globalCompositeOperation="source-over";
+  ARMS.forEach((A,k)=>{for(let i=0;i<220;i++){const u=.12+Math.random()*.75,r=R*(.06+u*.92)-R*.03,th=armAngle(k,u)-.12+gauss()*.05,px=Math.cos(th)*r,py=Math.sin(th)*r;
+    x.fillStyle="rgba(3,6,14,.18)";x.beginPath();x.arc(px,py,R*.012+Math.random()*R*.012,0,6.283);x.fill()}});
+  disk=c}
 function size(){const r=cv.getBoundingClientRect();dpr=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
-  cx=W/2;cy=H*.5;const maxRx=Math.min(W/2-28,(H/2-56)/TILT);RX=[maxRx*.4,maxRx*.67,maxRx*.95];S=Math.max(.8,Math.min(1.6,maxRx/230));
-  belt=Array.from({length:150},()=>({a:Math.random()*6.283,rr:RX[1]+(RX[2]-RX[1])*(.35+Math.random()*.3),s:Math.random()*.9+.3}))}
+  cx=W/2;cy=H*.5;R=Math.min(W/2-24,(H/2-46)/TILT);S=Math.max(.8,Math.min(1.5,R/250));buildDisk()}
 size();
-const proj=(rx,ang)=>{const x=Math.cos(ang),y=Math.sin(ang);return {x:cx+x*rx,y:cy+y*rx*TILT,depth:y}};
-let hover=-1,slow=1,t=0;
-function sphere(x,y,r,c,lx,ly){const g=ctx.createRadialGradient(x+lx*r*.45,y+ly*r*.45,r*.1,x,y,r);g.addColorStop(0,c[0]);g.addColorStop(.45,c[1]);g.addColorStop(1,c[2]);
-  ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,6.283);ctx.fill()}
-function drawPlanet(p,i){const pos=p.pos,sc=(1+pos.depth*.22)*S,r=p.r*sc*(i===hover?1.25:1),dim=hover>=0&&i!==hover;
-  ctx.globalAlpha=dim?.35:1;
-  const lx=(cx-pos.x),ly=(cy-pos.y),ll=Math.hypot(lx,ly)||1;   // light comes from the sun
-  // glow
-  const gl=ctx.createRadialGradient(pos.x,pos.y,r*.6,pos.x,pos.y,r*2.6);gl.addColorStop(0,p.c[1]+"55");gl.addColorStop(1,p.c[1]+"00");
-  ctx.fillStyle=gl;ctx.beginPath();ctx.arc(pos.x,pos.y,r*2.6,0,6.283);ctx.fill();
-  if(p.ring){ctx.save();ctx.translate(pos.x,pos.y);ctx.rotate(-.35);ctx.strokeStyle=p.c[1];ctx.globalAlpha*=.75;ctx.lineWidth=1.4*S;
-    ctx.beginPath();ctx.ellipse(0,0,r*2.1,r*.62,0,Math.PI,2*Math.PI);ctx.stroke();ctx.restore();ctx.globalAlpha=dim?.35:1}
-  sphere(pos.x,pos.y,r,p.c,lx/ll,ly/ll);
-  if(p.ring){ctx.save();ctx.translate(pos.x,pos.y);ctx.rotate(-.35);ctx.strokeStyle=p.c[1];ctx.globalAlpha*=.9;ctx.lineWidth=1.4*S;
-    ctx.beginPath();ctx.ellipse(0,0,r*2.1,r*.62,0,0,Math.PI);ctx.stroke();ctx.restore();ctx.globalAlpha=dim?.35:1}
-  ctx.font=`italic 600 ${Math.round(13.5*Math.min(1.25,S))}px 'Cormorant Garamond',serif`;ctx.textAlign="center";ctx.fillStyle="#eef4ff";
-  ctx.fillText(p.n,pos.x,pos.y-r-7);
-  // moons = techniques, shown on hover
-  if(i===hover){p.m.forEach((m,k)=>{const ang=p.ma+k*(6.283/p.m.length),mr=r*2.6+12*S,mx=pos.x+Math.cos(ang)*mr,my=pos.y+Math.sin(ang)*mr*.8;
-      ctx.globalAlpha=.35;ctx.strokeStyle="#a8cbff";ctx.lineWidth=.6;ctx.setLineDash([2,3]);ctx.beginPath();ctx.ellipse(pos.x,pos.y,mr,mr*.8,0,0,6.283);ctx.stroke();ctx.setLineDash([]);
-      ctx.globalAlpha=1;ctx.fillStyle="#ffd98a";ctx.beginPath();ctx.arc(mx,my,2.6*S,0,6.283);ctx.fill();
-      ctx.font=`${Math.round(10*Math.min(1.2,S))}px 'JetBrains Mono',monospace`;ctx.fillStyle="#ffd98a";ctx.textAlign=Math.cos(ang)>=0?"left":"right";
-      ctx.fillText(m,mx+(Math.cos(ang)>=0?6:-6),my+3.5)})}
-  ctx.globalAlpha=1}
-function drawSun(){const pr=1+.04*Math.sin(t*.03),R=26*S*pr;
-  const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R*4);g.addColorStop(0,"rgba(255,244,214,.95)");g.addColorStop(.18,"rgba(255,217,138,.75)");
-  g.addColorStop(.42,"rgba(255,160,80,.18)");g.addColorStop(1,"rgba(255,160,80,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R*4,0,6.283);ctx.fill();
-  const c=ctx.createRadialGradient(cx-R*.3,cy-R*.3,R*.1,cx,cy,R);c.addColorStop(0,"#fffdf4");c.addColorStop(.6,"#ffe2a0");c.addColorStop(1,"#ffb347");
-  ctx.fillStyle=c;ctx.beginPath();ctx.arc(cx,cy,R,0,6.283);ctx.fill();
-  ctx.font=`italic 700 ${Math.round(17*Math.min(1.3,S))}px 'Cormorant Garamond',serif`;ctx.textAlign="center";ctx.fillStyle="#6b3a06";ctx.fillText("AM",cx,cy+5*Math.min(1.3,S))}
+const place=(rr,th)=>({x:cx+Math.cos(th)*rr,y:cy+Math.sin(th)*rr*TILT,depth:Math.sin(th)});
+function star(x,y,r,col,tw){const g=ctx.createRadialGradient(x,y,0,x,y,r*2.4);g.addColorStop(0,"rgba(255,255,255,.95)");g.addColorStop(.22,col);g.addColorStop(1,"rgba(0,0,0,0)");
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r*2.4,0,6.283);ctx.fill();
+  ctx.strokeStyle="rgba(255,255,255,"+(.55+.35*tw)+")";ctx.lineWidth=.9;ctx.beginPath();ctx.moveTo(x-r*1.7,y);ctx.lineTo(x+r*1.7,y);ctx.moveTo(x,y-r*1.7);ctx.lineTo(x,y+r*1.7);ctx.stroke();
+  ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(x,y,Math.max(1.6,r*.28),0,6.283);ctx.fill()}
 function frame(){
   if(document.hidden||(window.__vis&&window.__vis.gwrap===false)){requestAnimationFrame(frame);return}
-  t++;slow+=((hover>=0?.08:1)-slow)*.08;
+  t++;spin+=((hover>=0?.06:1)-spin)*.08;if(!reduce)rot+=.0011*spin;
   ctx.clearRect(0,0,W,H);
-  // orbits
-  ORBITS.forEach((o,k)=>{ctx.strokeStyle=k===1?"rgba(127,231,255,.22)":"rgba(168,203,255,.2)";ctx.lineWidth=1;ctx.setLineDash(k===2?[2,5]:[]);
-    ctx.beginPath();ctx.ellipse(cx,cy,RX[k],RX[k]*TILT,0,0,6.283);ctx.stroke();ctx.setLineDash([]);
-    ctx.font="10px 'JetBrains Mono',monospace";ctx.fillStyle=k===1?"rgba(127,231,255,.55)":"rgba(163,180,216,.55)";ctx.textAlign="center";
-    ctx.fillText(o.name.toUpperCase(),cx,cy+RX[k]*TILT+13)});
-  // asteroid belt
-  ctx.fillStyle="#a3b4d8";belt.forEach(b=>{if(!reduce)b.a+=.0009*slow;const q=proj(b.rr,b.a);ctx.globalAlpha=.25+.35*(q.depth+1)/2;ctx.fillRect(q.x,q.y,b.s,b.s)});ctx.globalAlpha=1;
-  PLANETS.forEach(p=>{if(!reduce)p.a+=ORBITS[p.o].speed*slow;p.ma+=.01;p.pos=proj(RX[p.o],p.a)});
-  const order=PLANETS.map((p,i)=>i).sort((a,b)=>PLANETS[a].pos.depth-PLANETS[b].pos.depth);
-  order.filter(i=>PLANETS[i].pos.depth<0).forEach(i=>drawPlanet(PLANETS[i],i));
-  drawSun();
-  order.filter(i=>PLANETS[i].pos.depth>=0).forEach(i=>drawPlanet(PLANETS[i],i));
+  // the galaxy disk, tilted and turning
+  ctx.save();ctx.translate(cx,cy);ctx.scale(1,TILT);ctx.rotate(rot);ctx.drawImage(disk,-R,-R,R*2,R*2);ctx.restore();
+  // arm names at the arm tips
+  ctx.font="10px 'JetBrains Mono',monospace";ctx.textAlign="center";
+  ARMS.forEach((A,k)=>{const q=place(R*.99,armAngle(k,1)+rot);ctx.globalAlpha=hover>=0?.25:.6;ctx.fillStyle=A.col;const lx=Math.max(70,Math.min(W-70,q.x));ctx.fillText(A.name.toUpperCase(),lx,q.y+(q.depth>0?16:-10))});
+  ctx.globalAlpha=1;
+  // project stars
+  PROJ.forEach(p=>{p.pos=place(R*(.06+p.u*.92),armAngle(p.arm,p.u)+rot)});
+  const order=PROJ.map((p,i)=>i).sort((a,b)=>PROJ[a].pos.depth-PROJ[b].pos.depth);
+  order.forEach(i=>{const p=PROJ[i],A=ARMS[p.arm],tw=.5+.5*Math.sin(t*.05+i*1.7),dim=hover>=0&&i!==hover,
+      r=(p.big?8.5:6.5)*S*(1+p.pos.depth*.12)*(i===hover?1.45:1)*(.92+.08*tw);
+    ctx.globalAlpha=dim?.35:1;star(p.pos.x,p.pos.y,r,A.col,tw);
+    ctx.font=`italic 600 ${Math.round((p.big?15:13.5)*Math.min(1.25,S))}px 'Cormorant Garamond',serif`;ctx.textAlign="center";ctx.fillStyle="#eef4ff";
+    ctx.fillText(p.n,p.pos.x,p.pos.y-r*1.9-3);
+    if(i===hover){const mr=r*3+14*S;ctx.globalAlpha=.4;ctx.strokeStyle=A.col;ctx.lineWidth=.6;ctx.setLineDash([2,3]);ctx.beginPath();ctx.ellipse(p.pos.x,p.pos.y,mr,mr*.75,0,0,6.283);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;
+      p.m.forEach((m,k)=>{const ang=t*.012+k*(6.283/p.m.length),mx=p.pos.x+Math.cos(ang)*mr,my=p.pos.y+Math.sin(ang)*mr*.75,right=Math.cos(ang)>=0;
+        ctx.fillStyle="#ffd98a";ctx.beginPath();ctx.arc(mx,my,2.6*S,0,6.283);ctx.fill();
+        ctx.font=`${Math.round(10*Math.min(1.2,S))}px 'JetBrains Mono',monospace`;ctx.textAlign=right?"left":"right";ctx.fillText(m,mx+(right?6:-6),my+3.5)})}
+    ctx.globalAlpha=1});
   requestAnimationFrame(frame)}
 requestAnimationFrame(frame);
 function pick(e){const r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;let best=-1,bd=1e9;
-  PLANETS.forEach((p,i)=>{if(!p.pos)return;const d=Math.hypot(p.pos.x-x,p.pos.y-y),lim=p.r*S*1.6+10;if(d<lim&&d<bd){bd=d;best=i}});return best}
+  PROJ.forEach((p,i)=>{if(!p.pos)return;const d=Math.hypot(p.pos.x-x,p.pos.y-y);if(d<(p.big?24:20)*S&&d<bd){bd=d;best=i}});return best}
 cv.addEventListener("pointermove",e=>{hover=pick(e);cv.style.cursor=hover>=0?"pointer":"default";
-  document.querySelectorAll(".case").forEach(c=>c.classList.toggle("hot",hover>=0&&PLANETS[hover].t===c.id))});
+  document.querySelectorAll(".case").forEach(c=>c.classList.toggle("hot",hover>=0&&PROJ[hover].t===c.id))});
 cv.addEventListener("pointerleave",()=>{hover=-1;document.querySelectorAll(".case.hot").forEach(c=>c.classList.remove("hot"))});
-cv.addEventListener("click",e=>{const i=pick(e);if(i>=0){const el=document.getElementById(PLANETS[i].t);el&&el.scrollIntoView({behavior:reduce?"auto":"smooth"})}});
-let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(size,120)});
+cv.addEventListener("click",e=>{const i=pick(e);if(i>=0){const el=document.getElementById(PROJ[i].t);el&&el.scrollIntoView({behavior:reduce?"auto":"smooth"})}});
+let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(size,150)});
 })();
 </script>
 
